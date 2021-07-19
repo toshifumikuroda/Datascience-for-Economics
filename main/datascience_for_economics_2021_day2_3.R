@@ -1,3 +1,4 @@
+# Reproduct Karlan and List(2007) to understand demand estimation  --------
 # setup -------------------------------------------------------------------
 
 

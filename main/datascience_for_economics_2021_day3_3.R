@@ -1,4 +1,5 @@
-# Replicate Bloom and Reenen (2007) to understand panel data estim --------
+# Reproduct Bloom and Reenen (2007) ---------------------------------------
+# to understand estimate production function 
 
 
 # setup -------------------------------------------------------------------
