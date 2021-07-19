@@ -43,7 +43,7 @@ realdata %>%
 # Col1 --------------------------------------------------------------------
 realdata %>%
   tidyr::drop_na(lm, lp) %>%
-  estimatr::lm_robust(ls ~ zmanagement + le + le_fr + le_gr + le_uncons + le_us + uncons + cty + factor(year), clusters = code)
+  estimatr::lm_robust(formula = ls ~ zmanagement + le + le_fr + le_gr + le_uncons + le_us + uncons + cty + factor(year), clusters = code)
 
 # can't replicate by using cty and factor(year)
 
@@ -200,7 +200,7 @@ table1 <-
   add_rows(hux("General controls", "No", "No", "Yes", "Yes", "Yes", "Yes", "Yes"), after = nrow(.) - 1) %>% 
   add_rows(hux("Noise controls", "No", "No", "No", "Yes", "Yes", "Yes", "Yes"), after = nrow(.) - 1)
 
-huxtable::quick_xlsx(table1, file = "./figuretable/production_table1.xslx")
+huxtable::quick_xlsx(table1, file = "./figuretable/production_table1.xlsx")
 
 
 # Table 2 -----------------------------------------------------------------
@@ -253,13 +253,16 @@ table2 <-
   huxtable::huxreg(table2_1, table2_2, table2_3, table2_4, table2_5,
                  omit_coefs = c("(Intercept)", "uncons", "ldegreemiss", "lempm", "lfirmage", "public", sics, ccs),
                  statistics = c('# observations' = 'nobs') )%>%
-  add_rows(hux("Dependent variable", "Human capital management", 
+  add_rows(hux("Dependent variable", 
+               "Human capital management", 
                "Fixed capital management", 
                "Human capital - fixed capital management", 
                "Human capital - fixed capital management", 
                "Human capital - fixed capital management"), after = nrow(.) - 6) %>%  
   add_rows(hux("General controls", "No", "No", "No", "Yes", "Yes"), after = nrow(.) - 2) %>% 
   add_rows(hux("Industry controls", "No", "No", "No", "Yes", "Yes"), after = nrow(.) - 2)
+
+huxtable::quick_xlsx(table2, file = "./figuretable/production_table2.xlsx")
 
 
 # Table 3 -----------------------------------------------------------------
@@ -383,10 +386,13 @@ ctys <- generics::tidy(table3_8) %>%
 
 
 ### table3 ------------------------------------------------------------------
-huxtable::huxreg(table3_1, table3_2, table3_3, table3_4, table3_5, table3_6, table3_7, table3_8, 
+table3 <- 
+  huxtable::huxreg(table3_1, table3_2, table3_3, table3_4, table3_5, table3_6, table3_7, table3_8, 
                  omit_coefs = c("(Intercept)", "competitionmiss", table3_control, noise, sics, ctys),
                  statistics = c('# observations' = 'nobs') ) %>%
   add_rows(hux("Estimation method ", "OLS", "OLS", "OLS", "OLS", "OLS", "OLS", "OLS", "OLS"), after = nrow(.) - 8) %>%  
   add_rows(hux("Dependent variable ", "Management z-score", "Management z-score", "Management z-score", "Management z-score", 
                "Management z-score", "Management z-score", "Management z-score", "Management z-score"), after = nrow(.) - 8) %>%  
   add_rows(hux("General controls", "No", "Yes", "No", "Yes", "No", "Yes", "No", "Yes"), after = nrow(.) - 2)
+
+huxtable::quick_xlsx(table3, file = "./figuretable/production_table3.xlsx")
