@@ -6,13 +6,10 @@
 rm(list=ls())
 
 ## ライブラリ読み込み --------------------------------------------------------------
-library(Synth)
 library(tidyverse)
-library(foreach)
 
 ## データダウンロード 1度だけ実行すれば良い --------------------------------------------------
 download.file("https://www.nstac.go.jp/SSDSE/data/2020/SSDSE-2020B.csv", "./data/SSDSE-2020B.csv")
-
 
 ## データ読み込み -----------------------------------------------------------------
 names <-names(readr::read_csv("./data/SSDSE-2020B.csv",n_max = 0))
