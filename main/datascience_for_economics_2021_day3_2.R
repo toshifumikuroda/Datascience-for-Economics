@@ -8,7 +8,7 @@ library(huxtable)
 data(Fatalities)
 str(Fatalities)
 head(Fatalities)
-view(Fatalities)
+View(Fatalities)
 
 
 ## data management -------------------------------------------------------
