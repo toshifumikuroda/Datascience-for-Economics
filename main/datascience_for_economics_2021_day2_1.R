@@ -20,14 +20,14 @@ shock_y <- list()
 
 # モンテカルロシミュレーション
 try <- 100 # モデル毎のシミュレーション回数を設定
-foreach(model=1:4) %do% { # モデル毎のループ
-  foreach(i=1:try) %do% { # シミュレーション
+foreach(model = 1:4) %do% { # モデル毎のループ
+  foreach(i = 1:try) %do% { # シミュレーション
     parameter <- case[[model]] # パラメータを読み込む
-    p[[i+(model-1)*try]] <- (parameter[1]-parameter[3])/(parameter[2]+parameter[4]) # 均衡価格を計算する
-    x[[i+(model-1)*try]] <- (parameter[1]*parameter[4] + parameter[3]*parameter[2])/(parameter[4]+parameter[2]) # 均衡数量を計算する
-    mod[[i+(model-1)*try]] <- model # モデル番号を記録する
-    shock_x[[i+(model-1)*try]]  <- rnorm(1 ,mean = 0, sd = 0.5) # 誤差項を正規分布からドローして需要に足す
-    shock_y[[i+(model-1)*try]]  <- rnorm(1 ,mean = 0, sd = 0.5) # 誤差項を正規分布からドローして価格に足す
+    p[[i + (model - 1) * try]] <- (parameter[1]-parameter[3])/(parameter[2]+parameter[4]) # 均衡価格を計算する
+    x[[i + (model - 1) * try]] <- (parameter[1]*parameter[4] + parameter[3]*parameter[2])/(parameter[4]+parameter[2]) # 均衡数量を計算する
+    mod[[i + (model - 1) * try]] <- model # モデル番号を記録する
+    shock_x[[i + (model - 1) * try]]  <- rnorm(1 ,mean = 0, sd = 0.5) # 誤差項を正規分布からドローして需要に足す
+    shock_y[[i + (model - 1) * try]]  <- rnorm(1 ,mean = 0, sd = 0.5) # 誤差項を正規分布からドローして価格に足す
   }
 }
 
@@ -47,45 +47,53 @@ observation <- data.frame(cbind(p,x, mod,shock_x, shock_y, x_obs, p_obs))
 
 # 観察された価格と数量のプロットと近似曲線
 observation %>%
-  ggplot2::ggplot(aes(x = x_obs, y = p_obs)) +
-  geom_point() +
-  theme_classic() +
-  geom_smooth(method = "lm") +
-  ggtitle("Plot of regression x on p") + 
-  xlim(0,6) + ylim(0,7)
+  ggplot2::ggplot(ggplot2::aes(x = x_obs, y = p_obs)) +
+  ggplot2::geom_point() +
+  ggplot2::theme_classic() +
+  ggplot2::geom_smooth(method = "lm") +
+  ggplot2::ggtitle("Plot of regression x on p") + 
+  ggplot2::xlim(0,6) + ggplot2::ylim(0,7)
 
 # b = 2の需要曲線
-observation %>% filter(mod %in% c(1,3)) %>%
-  ggplot2::ggplot(aes(x = x_obs, y = p_obs)) +
-  geom_point() +
-  theme_classic() +
-  geom_smooth(method = "lm") +
-  ggtitle("Plot of Demand Function x = 10 - 2p") + 
-  xlim(0,6) + ylim(0,7)
+observation %>% 
+  dplyr::filter(mod %in% c(1,3)) %>%
+  ggplot2::ggplot(ggplot2::aes(x = x_obs, y = p_obs)) +
+  ggplot2::geom_point() +
+  ggplot2::theme_classic() +
+  ggplot2::geom_smooth(method = "lm") +
+  ggplot2::ggtitle("Plot of Demand Function x = 10 - 2p") + 
+  ggplot2::xlim(0,6) + 
+  ggplot2::ylim(0,7)
 
 # b=0.5の需要曲線
-observation %>% filter(mod %in% c(2,4)) %>%
-  ggplot2::ggplot(aes(x = x_obs, y = p_obs)) +
-  geom_point() +
-  theme_classic() +
-  geom_smooth(method = "lm") +
-  ggtitle("Plot of Demand Function  x = 6 - 0.5p") + 
-  xlim(0,6) + ylim(0,7)
+observation %>% 
+  dplyr::filter(mod %in% c(2,4)) %>%
+  ggplot2::ggplot(ggplot2::aes(x = x_obs, y = p_obs)) +
+  ggplot2::geom_point() +
+  ggplot2::theme_classic() +
+  ggplot2::geom_smooth(method = "lm") +
+  ggplot2::ggtitle("Plot of Demand Function  x = 6 - 0.5p") + 
+  ggplot2::xlim(0,6) + 
+  ggplot2::ylim(0,7)
 
 # b = -2, d = 2の供給曲線
-observation %>% filter(mod %in% c(1,2)) %>%
-  ggplot2::ggplot(aes(x = x_obs, y = p_obs)) +
-  geom_point() +
-  theme_classic() +
-  geom_smooth(method = "lm") +
-  ggtitle("Plot of Supply Function  x = -2 + 2p") + 
-  xlim(0,6) + ylim(0,7)
+observation %>% 
+  dplyr::filter(mod %in% c(1,2)) %>%
+  ggplot2::ggplot(ggplot2::aes(x = x_obs, y = p_obs)) +
+  ggplot2::geom_point() +
+  ggplot2::theme_classic() +
+  ggplot2::geom_smooth(method = "lm") +
+  ggplot2::ggtitle("Plot of Supply Function  x = -2 + 2p") + 
+  ggplot2::xlim(0,6) + 
+  ggplot2::ylim(0,7)
 
 # b = -8, d = 2の供給曲線
-observation %>% filter(mod %in% c(3,4)) %>%
-  ggplot2::ggplot(aes(x = x_obs, y = p_obs)) +
-  geom_point() +
-  theme_classic() +
-  geom_smooth(method = "lm") +
-  ggtitle("Plot of Supply Function  x = -8 + 2p") + 
-  xlim(0,6) + ylim(0,7)
+observation %>% 
+  dplyr::filter(mod %in% c(3,4)) %>%
+  ggplot2::ggplot(ggplot2::aes(x = x_obs, y = p_obs)) +
+  ggplot2::geom_point() +
+  ggplot2::theme_classic() +
+  ggplot2::geom_smooth(method = "lm") +
+  ggplot2::ggtitle("Plot of Supply Function  x = -8 + 2p") + 
+  ggplot2::xlim(0,6) + 
+  ggplot2::ylim(0,7)
