@@ -12,13 +12,13 @@ timeseries <- readr::read_csv("./data/03_timeseries.csv")
 figure_GDP_nominal_1 <- timeseries %>% 
   dplyr::mutate(GDP_real = GDP_real/1000) %>%
   dplyr::mutate(GDP_nominal = GDP_nominal/1000) %>%
-  ggplot2::ggplot(aes(x = year)) +
-  geom_line(aes(y = GDP_nominal, colour="blue"))+
-  geom_line(aes(y = GDP_real, colour="red")) +
-  xlab("Year") +
-  ylab("GDP (JPY Trillion)") +
-  scale_color_discrete(name = "GDP", labels = c("Nominal", "Real")) +
-  theme_classic()
+  ggplot2::ggplot(ggplot2::aes(x = year)) +
+  ggplot2::geom_line(ggplot2::aes(y = GDP_nominal, colour="blue"))+
+  ggplot2::geom_line(ggplot2::aes(y = GDP_real, colour="red")) +
+  ggplot2::xlab("Year") +
+  ggplot2::ylab("GDP (JPY Trillion)") +
+  ggplot2::scale_color_discrete(name = "GDP", labels = c("Nominal", "Real")) +
+  ggplot2::theme_classic()
 figure_GDP_nominal_1
 
 
@@ -32,11 +32,11 @@ timeseries_gather <-
 
 figure_GDP_nominal_2 <- 
   timeseries_gather %>%
-  ggplot2::ggplot(aes(x = year, y = GDP, colour = Type)) +
-  geom_line() +
-  xlab("Year") +
-  ylab("GDP (JPY billion)") +
-  theme_classic()
+  ggplot2::ggplot(ggplot2::aes(x = year, y = GDP, colour = Type)) +
+  ggplot2::geom_line() +
+  ggplot2::xlab("Year") +
+  ggplot2::ylab("GDP (JPY billion)") +
+  ggplot2::theme_classic()
 figure_GDP_nominal_2
 
 
@@ -48,81 +48,82 @@ timeseries <- timeseries %>%
 ## plot GDP_defrator & CPI -----------------------------------------------
 figure_price <- timeseries %>% 
   tidyr::gather(key = "Type", value = "Price", CPI, gdp_deflator) %>%
-  ggplot2::ggplot(aes(x = year, y = Price, colour = Type)) +
-  geom_line() +
-  xlab("Year") +
-  ylab("Price") +
-  theme_classic() +
-  scale_color_discrete(name = "Price", labels = c("CPI", "GDP Deflator"))
+  ggplot2::ggplot(ggplot2::aes(x = year, y = Price, colour = Type)) +
+  ggplot2::geom_line() +
+  ggplot2::xlab("Year") +
+  ggplot2::ylab("Price") +
+  ggplot2::theme_classic() +
+  ggplot2::scale_color_discrete(name = "Price", labels = c("CPI", "GDP Deflator"))
 figure_price
 
 
 ## plot Unemployment ------------------------------------------------------
 figure_unemployment <- timeseries %>% 
-  ggplot2::ggplot(aes(x = year, y = Unemployment_rate)) +
-  geom_line() +
-  xlab("Year") +
-  ylab("Unemployment Rate") +
-  theme_classic()
+  ggplot2::ggplot(ggplot2::aes(x = year, y = Unemployment_rate)) +
+  ggplot2::geom_line() +
+  ggplot2::xlab("Year") +
+  ggplot2::ylab("Unemployment Rate") +
+  ggplot2::theme_classic()
 figure_unemployment
 
 
 # part2 : philips curve ---------------------------------------------------
 ## gen inflation rate of GDP def % CPI ------------------------------------
 timeseries <- timeseries %>%
-  dplyr::mutate(inflation_rate_gdpdef = (gdp_deflator/lag(gdp_deflator)-1)) %>%
-  dplyr::mutate(inflation_rate_cpi = (CPI/lag(CPI)-1))
-
+  dplyr::mutate(
+    inflation_rate_gdpdef = (gdp_deflator/dplyr::lag(gdp_deflator)-1),
+    inflation_rate_cpi = (CPI/dplyr::lag(CPI)-1)
+    )
 
 ## plot scatter of inflation on GDPgap ------------------------------------
-timeseries %>% ggplot2::ggplot(aes(x = GDP_gap,  y = inflation_rate_gdpdef)) +
-  geom_point() +
-  xlab("GDP Gap") +
-  ylab("Inflation(GDP Deflator)") +
-  theme_classic()
+timeseries %>% ggplot2::ggplot(ggplot2::aes(x = GDP_gap,  y = inflation_rate_gdpdef)) +
+  ggplot2::geom_point() +
+  ggplot2::xlab("GDP Gap") +
+  ggplot2::ylab("Inflation(GDP Deflator)") +
+  ggplot2::theme_classic()
 
 
 ### geom_path(1) : GDP_def GDP_gap ----------------------------------------
-timeseries %>% ggplot2::ggplot(aes(x = GDP_gap,  y = inflation_rate_gdpdef)) +
-  geom_path() +
-  xlab("GDP Gap") +
-  ylab("Inflation(GDP Deflator)") +
-  theme_classic()
+timeseries %>% ggplot2::ggplot(ggplot2::aes(x = GDP_gap,  y = inflation_rate_gdpdef)) +
+  ggplot2::geom_path() +
+  ggplot2::xlab("GDP Gap") +
+  ggplot2::ylab("Inflation(GDP Deflator)") +
+  ggplot2::theme_classic()
 
 
 ### geom_path(2) : CPI GDP_gap ----------------------------------------------
-timeseries %>% ggplot2::ggplot(aes(x = GDP_gap,  y = inflation_rate_cpi)) +
-  geom_path() +
-  xlab("GDP Gap") +
-  ylab("Inflation(CPI)") +
-  theme_classic()
+timeseries %>% ggplot2::ggplot(ggplot2::aes(x = GDP_gap,  y = inflation_rate_cpi)) +
+  ggplot2::geom_path() +
+  ggplot2::xlab("GDP Gap") +
+  ggplot2::ylab("Inflation(CPI)") +
+  ggplot2::theme_classic()
 
 
 ### geom_path(3) : GDP_def Unemplotment -----------------------------------
-timeseries %>% ggplot2::ggplot(aes(x = Unemployment_rate,  y = inflation_rate_gdpdef)) +
-  geom_path() +
-  xlab("Unemployment Rate") +
-  ylab("Inflation(GDP Deflator)") +
-  theme_classic()
+timeseries %>% ggplot2::ggplot(ggplot2::aes(x = Unemployment_rate,  y = inflation_rate_gdpdef)) +
+  ggplot2::geom_path() +
+  ggplot2::xlab("Unemployment Rate") +
+  ggplot2::ylab("Inflation(GDP Deflator)") +
+  ggplot2::theme_classic()
 
 
 ### geom_path(4) : CPI Unemplotment ---------------------------------------
-timeseries %>% ggplot2::ggplot(aes(x = Unemployment_rate,  y = inflation_rate_cpi)) +
-  geom_path() +
-  xlab("Unemployment Rate") +
-  ylab("Inflation(CPI)") +
-  theme_classic()
+timeseries %>% ggplot2::ggplot(ggplot2::aes(x = Unemployment_rate,  y = inflation_rate_cpi)) +
+  ggplot2::geom_path() +
+  ggplot2::xlab("Unemployment Rate") +
+  ggplot2::ylab("Inflation(CPI)") +
+  ggplot2::theme_classic()
 
 
 ### geom_path(5) : for SNS --------------------------------------------------
 timeseries %>% dplyr::mutate(ages = format(as.integer(year/10),3)) %>%
-  ggplot2::ggplot(aes(x = Unemployment_rate,  y = inflation_rate_cpi, colour = ages, shape= ages)) +
-  geom_path() +
-  geom_point() +
-  xlab("Unemployment Rate") +
-  ylab("Inflation(CPI)") +
-  theme_classic() + 
-  scale_color_manual(breaks = c("198", "199", "200", "201"),
+  ggplot2::ggplot(ggplot2::aes(x = Unemployment_rate,  y = inflation_rate_cpi, colour = ages, shape= ages)) +
+  ggplot2::geom_path() +
+  ggplot2::geom_point() +
+  ggplot2::xlab("Unemployment Rate") +
+  ggplot2::ylab("Inflation(CPI)") +
+  ggplot2::theme_classic() + 
+  ggplot2::scale_color_manual(breaks = c("198", "199", "200", "201"),
                      values=c("red", "blue", "green", "purple"))
 
 
@@ -133,23 +134,23 @@ phillips_ols_1$fitted.values
 summary(phillips_ols_1)[["coefficients"]][, "t value"]
 
 ## geom_point with lm
-timeseries %>% ggplot2::ggplot(aes(x = Unemployment_rate,  y = inflation_rate_cpi)) +
-  geom_point() +
-  stat_smooth(method = "lm", se = FALSE, colour = "red", size = 1) +
-  xlab("Unemployment Rate") +
-  ylab("Inflation(CPI)") +
-  theme_classic()
+timeseries %>% ggplot2::ggplot(ggplot2::aes(x = Unemployment_rate,  y = inflation_rate_cpi)) +
+  ggplot2::geom_point() +
+  ggplot2::stat_smooth(method = "lm", se = FALSE, colour = "red", size = 1) +
+  ggplot2::xlab("Unemployment Rate") +
+  ggplot2::ylab("Inflation(CPI)") +
+  ggplot2::theme_classic()
 
 
 ## geom_point with lm for SNS ---------------------------------------------
 timeseries %>% dplyr::mutate(ages = format(as.integer(year/10),3)) %>%
-  ggplot2::ggplot(aes(x = Unemployment_rate,  y = inflation_rate_cpi, colour = ages, shape= ages)) +
-  geom_point() +
-  stat_smooth(method = "lm", se = FALSE, size = 0.5, linetype="dashed") +
-  xlab("Unemployment Rate") +
-  ylab("Inflation(CPI)") +
-  theme_classic() + 
-  scale_color_manual(breaks = c("198", "199", "200", "201"),
+  ggplot2::ggplot(ggplot2::aes(x = Unemployment_rate,  y = inflation_rate_cpi, colour = ages, shape= ages)) +
+  ggplot2::geom_point() +
+  ggplot2::stat_smooth(method = "lm", se = FALSE, size = 0.5, linetype="dashed") +
+  ggplot2::xlab("Unemployment Rate") +
+  ggplot2::ylab("Inflation(CPI)") +
+  ggplot2::theme_classic() + 
+  ggplot2::scale_color_manual(breaks = c("198", "199", "200", "201"),
                      values=c("red", "blue", "green", "purple"))
 
 
@@ -159,22 +160,25 @@ timeseries %>% dplyr::mutate(ages = format(as.integer(year/10),3)) %>%
 timeseries$phillips_ols_1_residual <- NA
 timeseries$phillips_ols_1_residual[which(!is.na(timeseries$inflation_rate_cpi))] <- phillips_ols_1$resid
 timeseries %>% 
-  ggplot2::ggplot(aes(x = year,  y = phillips_ols_1_residual)) +
-  geom_path() +
-  stat_smooth(method = "lm", se = FALSE, colour = "red", size = 1) +
-  xlab("Year") +  ylab("OLS Residuals") +
-  theme_classic()
+  ggplot2::ggplot(ggplot2::aes(x = year,  y = phillips_ols_1_residual)) +
+  ggplot2::geom_path() +
+  ggplot2::stat_smooth(method = "lm", se = FALSE, colour = "red", size = 1) +
+  ggplot2::xlab("Year") +  ggplot2::ylab("OLS Residuals") +
+  ggplot2::theme_classic()
 
 
 ## Is redisuals are white noize ? -----------------------------------------
 timeseries %>% 
-  dplyr::mutate(whitenoize=rnorm(n(), mean = 0, sd = summary(phillips_ols_1)$sigma)) %>%
-  ggplot2::ggplot(aes(x = year,  y = whitenoize))+
-  geom_path(linetype="dashed") +
-  geom_path(aes(x = year,  y = phillips_ols_1_residual), colour = "red") +
-  geom_line(aes(x = year, y = 0)) +
-  xlab("Year") +  ylab("OLS Residuals") +
-  theme_classic()
+  dplyr::mutate(
+    whitenoize = rnorm(
+      dplyr::n(), mean = 0, sd = summary(phillips_ols_1)$sigma)
+    ) %>%
+  ggplot2::ggplot(ggplot2::aes(x = year,  y = whitenoize))+
+  ggplot2::geom_path(linetype="dashed") +
+  ggplot2::geom_path(ggplot2::aes(x = year,  y = phillips_ols_1_residual), colour = "red") +
+  ggplot2::geom_line(ggplot2::aes(x = year, y = 0)) +
+  ggplot2::xlab("Year") +  ggplot2::ylab("OLS Residuals") +
+  ggplot2::theme_classic()
 
 
 ## autocorration test ------------------------------------------------------
@@ -204,7 +208,7 @@ phillips_nw_ols_4 <- sandwich::NeweyWest(phillips_ols_4, lag = 1, prewhite = F, 
 ttest_4 <- lmtest::coeftest(phillips_ols_4, vcov = phillips_nw_ols_4)
 
 results <- as.data.frame(rbind(ttest_1, ttest_2, ttest_3, ttest_4)) %>%
-  dplyr::filter(row_number() %% 2 == 0)
+  dplyr::filter(dplyr::row_number() %% 2 == 0)
 row.names(results) <- c("CPI on Unemployment", "GDP Deflator on Unemployment",
                         "CPI on GDP Gap", "GDP Deflator on GDP Gap")
 results
