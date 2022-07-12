@@ -3,6 +3,7 @@
 rm(list = ls())
 
 ## load libraries ---------------------------------------------------------
+library(magrittr)
 library(tidyverse)
 
 
@@ -17,29 +18,32 @@ hist(infected, breaks="days", freq=TRUE)
 ## histogram --------------------------------------------------------------
 covid_19 %>%
   dplyr::mutate(days = as.Date(確定日, "%m/%d/%y")) %>%
-  ggplot2::ggplot(aes(x=days)) + 
-  geom_histogram(binwidth = 1,color = "black", fill = "lightgray") +
-  theme_classic()
+  ggplot2::ggplot(ggplot2::aes(x=days)) + 
+  ggplot2::geom_histogram(binwidth = 1, color = "black", fill = "lightgray") +
+  ggplot2::theme_classic()
 
 ## histgram of female -----------------------------------------------------
-covid_19 %>%  dplyr::filter(性別=="女性") %>% 
+covid_19 %>% dplyr::filter(性別=="女性") %>% 
   dplyr::mutate(days = as.Date(確定日, "%m/%d/%y")) %>% 
-  ggplot2::ggplot(aes(x=days)) +   geom_histogram(binwidth = 1, color="black", fill="lightgray") +  theme_classic()
-
+  ggplot2::ggplot(ggplot2::aes(x=days)) + 
+  ggplot2::geom_histogram(binwidth = 1, color="black", fill="lightgray") + 
+  ggplot2::theme_classic()
 
 ## histgram by sex --------------------------------------------------------
 covid_19 %>%
   dplyr::mutate(days = as.Date(確定日, "%m/%d/%y")) %>%
-  ggplot2::ggplot(aes(x=days, fill = 性別)) + 
-  geom_histogram(binwidth = 1) +
-  theme_classic()
+  ggplot2::ggplot(ggplot2::aes(x=days, fill = 性別)) + 
+  ggplot2::geom_histogram(binwidth = 1) +
+  ggplot2::theme_classic()
 
 
 ## fix sex ----------------------------------------------------------------
-covid_19 %>% dplyr::group_by(性別) %>%  summarize()
+covid_19 %>% 
+  dplyr::group_by(性別) %>% 
+  dplyr::summarize()
 
 covid_19 <- 
-covid_19 %>%  
+  covid_19 %>%  
   dplyr::mutate(days = as.Date(確定日, "%m/%d/%y")) %>% 
   dplyr::mutate(
     sex = dplyr::case_when(
@@ -49,69 +53,92 @@ covid_19 %>%
       )
     )
 
+covid_19 %>%
+  dplyr::mutate(days = as.Date(確定日, "%m/%d/%y")) %>%
+  ggplot2::ggplot(ggplot2::aes(x=days, fill = sex)) + 
+  ggplot2::geom_histogram(binwidth = 1) +
+  ggplot2::theme_classic()
 
 ## scatter plot -----------------------------------------------------------
 covid_19 %>%
   dplyr::mutate(week = format(days, "%W")) %>%
   dplyr::group_by(年代,week) %>%
-  dplyr::mutate(case = n()) %>%
-  ggplot2::ggplot(aes(x = week, y = 年代, size = case)) + 
-  geom_point() +
-  theme_classic()
+  dplyr::mutate(case = dplyr::n()) %>%
+  ggplot2::ggplot(ggplot2::aes(x = week, y = 年代, size = case)) + 
+  ggplot2::geom_point() +
+  ggplot2::theme_classic()
 
 
 ## fix ages ---------------------------------------------------------------
-agelist <- covid_19 %>% dplyr::group_by(年代) %>%  summarize()
+agelist <- covid_19 %>% dplyr::group_by(年代) %>%  dplyr::summarize()
 
 covid_19 <- 
   covid_19 %>%  
   dplyr::mutate(
     ages = dplyr::case_when(
-      stringr::str_detect(年代, '10') ~ "000 - 010",
-      stringr::str_detect(年代, '20') ~ "010 - 020",
-      stringr::str_detect(年代, '30') ~ "020 - 030",
-      stringr::str_detect(年代, '40') ~ "030 - 040",
-      stringr::str_detect(年代, '50') ~ "040 - 050",
-      stringr::str_detect(年代, '60') ~ "050 - 060",
-      stringr::str_detect(年代, '70') ~ "060 - 070",
-      stringr::str_detect(年代, '80') ~ "070 - 080",
-      stringr::str_detect(年代, '90') ~ "080 - 090",
+      stringr::str_detect(年代, '10') ~ "0 - 10",
+      stringr::str_detect(年代, '20') ~ "10 - 20",
+      stringr::str_detect(年代, '30') ~ "20 - 30",
+      stringr::str_detect(年代, '40') ~ "30 - 40",
+      stringr::str_detect(年代, '50') ~ "40 - 50",
+      stringr::str_detect(年代, '60') ~ "50 - 60",
+      stringr::str_detect(年代, '70') ~ "60 - 70",
+      stringr::str_detect(年代, '80') ~ "70 - 80",
+      stringr::str_detect(年代, '90') ~ "80 - 90",
       TRUE ~ "Unknown"
     ),
-    ages = ifelse(str_detect(年代, '100'), "100 - ", ages),
+    ages = ifelse(
+      stringr::str_detect(年代, '100'),
+      "100 - ",
+      ages
+      ),
+    # factor は level を付けることで並び順を変える事ができる。
+    ages = factor(
+      ages,
+      levels = c(
+        "0 - 10",
+        "10 - 20",
+        "20 - 30",
+        "30 - 40",
+        "40 - 50",
+        "50 - 60",
+        "60 - 70",
+        "70 - 80",
+        "80 - 90",
+        "100 - ",
+        "Unknown"
+        )
+      ),
     week = format(days, "%W")
-  )
+    )
+
 ## scatter plot -----------------------------------------------------------
 covid_19 %>%
   dplyr::group_by(ages, week) %>%
-  dplyr::mutate(case = n()) %>%
-  ggplot2::ggplot(aes(x = week, y = ages, size = case)) + 
-  geom_point() +
-  theme_classic()
-
+  dplyr::mutate(case = dplyr::n()) %>%
+  ggplot2::ggplot(ggplot2::aes(x = week, y = ages, size = case)) + 
+  ggplot2::geom_point() +
+  ggplot2::theme_classic()
 
 ## SNS appealing figure ---------------------------------------------------
 covid_19 %>% 
   dplyr::group_by(ages,week) %>% 
-  dplyr::mutate(case = n()) %>% 
-  ggplot2::ggplot(aes(x=week, y=ages, size = case, color = case)) +
-  geom_point() +
-  theme_classic() +
-  scale_colour_gradient(low = "green", high = "red", na.value = NA)
-
-
+  dplyr::mutate(case = dplyr::n()) %>% 
+  ggplot2::ggplot(ggplot2::aes(x=week, y=ages, size = case, color = case)) +
+  ggplot2::geom_point() +
+  ggplot2::theme_classic() +
+  ggplot2::scale_colour_gradient(low = "green", high = "red", na.value = NA)
 
 ## SNS appealing figure by prefecture -------------------------------------
 covid_19 %>% 
   dplyr::rename(pref = "Residential.Pref") %>%
   dplyr::group_by(ages,week) %>% 
-  dplyr::mutate(case = n()) %>% 
-  ggplot2::ggplot(aes(x=week, y=ages, size = case, color = case)) +
-  geom_point() +
-  theme_classic() +
-  scale_colour_gradient(low = "green", high = "red", na.value = NA) +
-  facet_wrap(~ pref, nrow = 5)
-
+  dplyr::mutate(case = dplyr::n()) %>% 
+  ggplot2::ggplot(ggplot2::aes(x=week, y=ages, size = case, color = case)) +
+  ggplot2::geom_point() +
+  ggplot2::theme_classic() +
+  ggplot2::scale_colour_gradient(low = "green", high = "red", na.value = NA) +
+  ggplot2::facet_wrap(~ pref, nrow = 5)
 
 # table -------------------------------------------------------------------
 
@@ -121,7 +148,7 @@ covid_19 %>%
   dplyr::mutate(month = format(days, "%m")) %>%
   dplyr::mutate(ages = as.numeric(年代)) %>%
   dplyr::group_by(month) %>%
-  dplyr::summarize(mean = mean(ages),
+  dplyr::summarize(mean = mean(ages, na.rm = TRUE),
                    median = median(ages, na.rm = TRUE))
 
 
@@ -129,10 +156,10 @@ covid_19 %>%
 covid_19 %>%
   dplyr::rename(pref = "Residential.Pref") %>%
   dplyr::group_by(pref) %>%
-  dplyr::summarize(case = n()) %>%
+  dplyr::summarize(case = dplyr::n()) %>%
   dplyr::mutate(proportion = case/sum(case)) %>%
   dplyr::arrange(desc(proportion)) %>%
-  dplyr::mutate(rank = row_number()) %>%
+  dplyr::mutate(rank = dplyr::row_number()) %>%
   dplyr::select(rank, proportion, pref)
 
 
@@ -141,10 +168,10 @@ ranking_table <-
   covid_19 %>%
   dplyr::rename(pref = "Residential.Pref") %>%
   dplyr::group_by(pref) %>%
-  dplyr::summarize(case = n()) %>%
+  dplyr::summarize(case = dplyr::n()) %>%
   dplyr::mutate(proportion = case/sum(case)) %>%
   dplyr::arrange(desc(proportion)) %>%
-  dplyr::mutate(rank = row_number()) %>%
+  dplyr::mutate(rank = dplyr::row_number()) %>%
   dplyr::select(rank, proportion, pref)
 
 
