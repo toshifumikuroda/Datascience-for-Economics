@@ -1,7 +1,6 @@
 # 初期設定
 rm(list = ls())
 library(tidyverse)
-library(matlib) # need to install
 library(foreach)  # need to install
 
 # モデルパラメータの設定
