@@ -209,13 +209,14 @@ ranking_kableExtra %>%
     file = "figuretable/table_covid_19.png"
   )
 
-ranking_kableExtra %>%
-  kableExtra::save_kable(
-    file = "figuretable/table_covid_19.html"
-  )
-
-webshot::webshot(
-  "figuretable/table_covid_19.html",
-  "figuretable/table_covid_19.png"
-)
+# when webshot does not work in local environment.
+# ranking_kableExtra %>%
+#   kableExtra::save_kable(
+#     file = "figuretable/table_covid_19.html"
+#   )
+# 
+# webshot::webshot(
+#   "figuretable/table_covid_19.html",
+#   "figuretable/table_covid_19.png"
+# )
 
