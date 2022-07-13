@@ -448,7 +448,7 @@ modelsummary::modelsummary(
     file = "figuretable/demand_table3.xlsx"
   )
 
-Table3 <- 
+Table3_edited <- 
   modelsummary::modelsummary(
     title = "寄附価格と寄付行動の関係",
     list(
@@ -482,30 +482,25 @@ Table3 <-
   kableExtra::kable_classic()
 
 ### export ----------------------------------------------------------------
-Table3 %>%
+Table3_edited %>%
   kableExtra::save_kable(
-    file = "figuretable/demand_table3.png"
+    file = "figuretable/demand_table3_edited.png"
   )
 
 # when webshot does not work in local environment.
-Table3 %>%
-  kableExtra::save_kable(
-    file = "figuretable/demand_table3.html"
-  )
-
-webshot::webshot(
-  "figuretable/demand_table3.html",
-  "figuretable/demand_table3.png"
-)
-
-### export table ----------------------------------------------------------
+# Table3 %>%
+#   kableExtra::save_kable(
+#     file = "figuretable/demand_table3_edited.html"
+#   )
+# 
+# webshot::webshot(
+#   "figuretable/demand_table3_edited.html",
+#   "figuretable/demand_table3_edited.png"
+# )
 
 
 
-library(jtools)
-jtools::export_summs(Table3_1, Table3_2, scale = TRUE)
-
-# 付加価値
+# 付加価値 --------------------------------------------------------------------
 ## 価格の作成
 linear_1 <- giving %>% 
   dplyr::mutate(price = 1/(1+ratio)) %>%
