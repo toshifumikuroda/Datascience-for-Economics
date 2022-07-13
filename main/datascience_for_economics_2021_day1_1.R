@@ -187,15 +187,35 @@ View(ranking_table)
 ## export table -----------------------------------------------------------
 readr::write_csv(ranking_table, file = "figuretable/covid_19.csv")
 
-ranking_huxtable <-
-  ranking_table %>%
-  huxtable::as_hux() %>%
-  huxtable::set_outer_padding(0) %>% 
-  huxtable::set_bold(row = 1, col = huxtable::everywhere) %>% 
-  huxtable::set_bottom_border(row = 1, col = huxtable::everywhere) %>% 
-  huxtable::set_caption("国内新型コロナウイルス感染者数")
 
-ranking_huxtable %>%
-  huxtable::quick_docx(file = "figuretable/covid_19.docx")
-ranking_huxtable %>%
-  huxtable::quick_xlsx(file = "figuretable/covid_19.xlsx")
+# export table by kableExtra ----------------------------------------------
+ranking_kableExtra <-
+  ranking_table %>%
+  dplyr::rename(
+    "順位" = rank,
+    "感染者率" = proportion,
+    "都道府県" = pref
+  ) %>%
+  kableExtra::kbl() %>%
+  kableExtra::add_header_above(
+    c("国内新型コロナウイルス感染者数" = 3)
+  ) %>%
+  kableExtra::kable_classic()
+
+
+## export -----------------------------------------------------------------
+ranking_kableExtra %>%
+  kableExtra::save_kable(
+    file = "figuretable/table_covid_19.png"
+  )
+
+ranking_kableExtra %>%
+  kableExtra::save_kable(
+    file = "figuretable/table_covid_19.html"
+  )
+
+webshot::webshot(
+  "figuretable/table_covid_19.html",
+  "figuretable/table_covid_19.png"
+)
+
