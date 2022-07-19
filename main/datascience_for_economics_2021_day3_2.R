@@ -1,5 +1,6 @@
 # Section Panel Data ------------------------------------------------------
 ## set up -----------------------------------------------------------------
+library(tidyverse)
 library(AER)
 library(estimatr)
 library(huxtable)
@@ -13,8 +14,10 @@ View(Fatalities)
 
 ## data management -------------------------------------------------------
 Fatalities$fatal_rate <- Fatalities$fatal / Fatalities$pop * 10000
-Fatalities1982 <- subset(Fatalities, year == "1982")
-Fatalities1988 <- subset(Fatalities, year == "1988")
+Fatalities1982 <- Fatalities %>%
+  dplyr::filter(year == "1982")
+Fatalities1988 <- Fatalities %>%
+  dplyr::filter(year == "1988")
 
 
 ## regress ----------------------------------------------------------------
@@ -139,31 +142,25 @@ fatalities_mod_hac2 <- lm_robust(fatal_rate ~ beertax + state + year + drinkagec
 
 
 ### show --------------------------------------------------------------------
-huxreg(fatalities_mod, fatalities_mod_i, fatalities_mod_it, fatalities_mod_hc, fatalities_mod_hac, fatalities_mod_hc2, fatalities_mod_hac2, 
-       statistics = c(N = "nobs", R2 = "r.squared")) %>%
-  add_rows(hux("Robust Standard Error", "No", "No", "NO", "HC", "Cluster", "HC", "Cluster"),
-           after = nrow(.) - 3)
-
-
-### state coefficients ----------------------------------------------------
-state_coefs <- tidy(fatalities_mod_i) %>% 
-  filter(str_detect(term, "state")) %>% 
-  pull(term)
-
-
-### year coefficients -----------------------------------------------------
-year_coefs <- tidy(fatalities_mod_it) %>% 
-  filter(str_detect(term, "year")) %>% 
-  pull(term)
-
+modelsummary::modelsummary(
+  title = "ビール税と死亡率",
+  list(fatalities_mod, fatalities_mod_i, fatalities_mod_it, fatalities_mod_hc, fatalities_mod_hac, fatalities_mod_hc2, fatalities_mod_hac2),
+  gof_map = c("nobs", "r.squared"),
+  statistic = "std.error"
+)
 
 ### eliminate state and year dummy ----------------------------------------
-huxreg(fatalities_mod, fatalities_mod_i, fatalities_mod_it, fatalities_mod_hc, fatalities_mod_hac, fatalities_mod_hc2, fatalities_mod_hac2, 
-       statistics = c(N = "nobs", R2 = "r.squared"),
-       omit_coefs = c(state_coefs, year_coefs)) %>%
-  add_rows(hux("State controls", "No", "Yes", "Yes", "Yes", "Yes", "Yes", "Yes"),
-           after = nrow(.) - 3) %>%
-  add_rows(hux("Year controls", "No", "No", "Yes", "Yes", "Yes", "Yes", "Yes"),
-           after = nrow(.) - 3) %>%
-  add_rows(hux("Robust Standard Error", "No", "No", "NO", "HC", "Cluster", "HC", "Cluster"),
-           after = nrow(.) - 3)
+state_control <- c("State controls", "No", "Yes", "Yes", "Yes", "Yes", "Yes", "Yes")
+year_control <- c("Year controls", "No", "No", "Yes", "Yes", "Yes", "Yes", "Yes")
+se_table <- c("Robust Standard Error", "No", "No", "NO", "HC", "Cluster", "HC", "Cluster")
+table_rows <- data.frame(rbind(state_control, year_control, se_table))
+attr(table_rows, 'position') <- c(15,16,17)
+
+modelsummary::modelsummary(
+  title = "ビール税と死亡率",
+  list(fatalities_mod, fatalities_mod_i, fatalities_mod_it, fatalities_mod_hc, fatalities_mod_hac, fatalities_mod_hc2, fatalities_mod_hac2),
+  gof_map = c("nobs", "r.squared"),
+  statistic = "std.error",
+  coef_omit = "state*|year*",
+  add_rows = table_rows
+)
