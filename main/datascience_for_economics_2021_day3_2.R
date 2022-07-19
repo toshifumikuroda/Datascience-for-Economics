@@ -1,5 +1,9 @@
 # Section Panel Data ------------------------------------------------------
 ## set up -----------------------------------------------------------------
+## clear memory -----------------------------------------------------------
+rm(list=ls())
+
+## load library -----------------------------------------------------------
 library(tidyverse)
 library(AER)
 library(estimatr)
@@ -78,22 +82,24 @@ abline(fatal_diff_mod, lwd = 1.5)
 
 ## heteroscedacity data ---------------------------------------------------
 data("CPSSWEducation")
-attach(CPSSWEducation)
 
 
 ## plot -------------------------------------------------------------------
-labor_model <- lm(earnings ~ education)
-plot(education,  earnings,  ylim = c(0, 150))
+labor_model <- lm(earnings ~ education, data = CPSSWEducation)
+plot(education,  earnings,  ylim = c(0, 150), data = CPSSWEducation)
 abline(labor_model, col = "steelblue", lwd = 2)
 summary(labor_model)
 
 
 ## boxplot ----------------------------------------------------------------
 boxplot(formula = earnings ~ education, 
-        at = c(intersect(CPSSWEducation$education,CPSSWEducation$education)),
+        at = c(intersect(
+          CPSSWEducation$education,
+          CPSSWEducation$education)
+        ),
         add = TRUE, 
-        border = "black")
-
+        border = "black", 
+        data = CPSSWEducation)
 
 ## Homoskedasdicity and Heteroskedasticity  -------------------------------
 coeftest(labor_model)
@@ -127,17 +133,17 @@ fatalities_mod_it <- lm(fatal_rate ~ beertax + state + year, data = Fatalities)
 
 
 ### fixed effect with Heteroskedasticity robust ---------------------------
-fatalities_mod_hc <- lm_robust(fatal_rate ~ beertax + state + year, data = Fatalities)
+fatalities_mod_hc <- estimatr::lm_robust(fatal_rate ~ beertax + state + year, data = Fatalities)
 
 
 ### fixed effect with Heteroskedasticity and Autocorrelation robust -------
-fatalities_mod_hac <- lm_robust(fatal_rate ~ beertax + state + year, data = Fatalities, clusters = state)
+fatalities_mod_hac <- estimatr::lm_robust(fatal_rate ~ beertax + state + year, data = Fatalities, clusters = state)
 
 
 ### additional variables with Heteroskedasticity and Autocorrelation --------
-fatalities_mod_hc2 <- lm_robust(fatal_rate ~ beertax + state + year + drinkagec + punish + miles, 
+fatalities_mod_hc2 <- estimatr::lm_robust(fatal_rate ~ beertax + state + year + drinkagec + punish + miles, 
                                 data = Fatalities)
-fatalities_mod_hac2 <- lm_robust(fatal_rate ~ beertax + state + year + drinkagec + punish + miles, 
+fatalities_mod_hac2 <- estimatr::lm_robust(fatal_rate ~ beertax + state + year + drinkagec + punish + miles, 
                                  data = Fatalities, clusters = state)
 
 
