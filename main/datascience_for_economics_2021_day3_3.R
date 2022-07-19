@@ -21,11 +21,11 @@ realdata <- readr::read_csv("./data/realdata.csv")
 
 
 # Figure 1 ----------------------------------------------------------------
-realdata %>% ggplot2::ggplot(aes(x=amanagement))+
-  geom_histogram(aes(y = ..density..), bins = 50)+
-  facet_wrap(cty ~ ., nrow = 2)+
-  scale_y_continuous(breaks=seq(0,1.2,0.2)) +
-  labs(title="Distribution of Management Scores by Country",x="Management Score", y = "Density")+
+realdata %>% ggplot2::ggplot(ggplot2::aes(x=amanagement))+
+  ggplot2::geom_histogram(aes(y = ..density..), bins = 50)+
+  ggplot2::facet_wrap(cty ~ ., nrow = 2)+
+  ggplot2::scale_y_continuous(breaks=seq(0,1.2,0.2)) +
+  ggplot2::labs(title="Distribution of Management Scores by Country",x="Management Score", y = "Density")+
   theme_classic()
 
 
