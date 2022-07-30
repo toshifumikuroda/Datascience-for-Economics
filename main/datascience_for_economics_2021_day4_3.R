@@ -372,7 +372,10 @@ modelsummary::modelsummary(
   title = paste0("OLS Regressions"),
   output = "huxtable"
   ) %>%
-  huxtable::quick_xlsx(file = "figuretable/AJR_table2.xlsx")
+  huxtable::quick_xlsx(
+    file = "figuretable/AJR_table2.xlsx",
+    open = FALSE
+    )
 
 
 # make figure 2 -----------------------------------------------------------
@@ -512,8 +515,11 @@ table3_a <- modelsummary::modelsummary(
     "Panel A: Dependent Variable Is Average Protection Against Expropriation Risk in 1985 to 1995"
   ),
   output = "huxtable"
-  ) %>%
-  huxtable::quick_xlsx(file = "figuretable/AJR_table3_a.xlsx")
+) %>%
+  huxtable::quick_xlsx(
+    file = "figuretable/AJR_table3_a.xlsx",
+    open = FALSE
+  )
 
 
 ## panel b -----------------------------------------------------------------
@@ -614,7 +620,10 @@ table3_b <- modelsummary::modelsummary(
   title = "Determinents of Institutions",
   output = "huxtable"
   ) %>%
-  huxtable::quick_xlsx(file = "figuretable/AJR_table3_b.xlsx")
+  huxtable::quick_xlsx(
+    file = "figuretable/AJR_table3_b.xlsx",
+    open = FALSE
+  )
 
 # Table 4 -----------------------------------------------------------------
 
@@ -628,8 +637,6 @@ table4_df <- foreign::read.dta("./data/AJR/maketable4.dta") %>%
       0
       )
     )
-
-
 
 ## panel a ----------------------------------------------------------------
 
@@ -736,9 +743,12 @@ table4_a <- modelsummary::modelsummary(
   coef_map = table4_a_coef_map,
   gof_map = c("r.squared", "nobs"),
   title = "IV REGRESSIONS OF LOG GDP PER CAPITA",
-  
+  output = "huxtable"
   ) %>%
-  huxtable::quick_xlsx(file = "figuretable/AJR_table4_a.xlsx")
+  huxtable::quick_xlsx(
+    file = "figuretable/AJR_table4_a.xlsx",
+    open = FALSE
+  )
 
 ## panel b ----------------------------------------------------------------
 
@@ -849,11 +859,13 @@ table4_b <- modelsummary::modelsummary(
   title = "Panel B: First Stage for Average Protection Against Expropriation Risk in 1985 ~ 1995",
   output = "huxtable"
   ) %>%
-  huxtable::quick_xlsx(file = "figuretable/AJR_table4_b.xlsx")
+  huxtable::quick_xlsx(
+    file = "figuretable/AJR_table4_b.xlsx",
+    open = FALSE
+    )
 
 
 ## panel c ----------------------------------------------------------------
-
 
 ### regress panel c -------------------------------------------------------
 table4_c_col1 <- 
@@ -916,7 +928,6 @@ table4_c_col9 <-
 
 
 # make panel c object -----------------------------------------------------
-
 table4_b_coef_map <- c(
   "avexpr" = "Average protection against\n expropriation risk 1985 ~ 1995"
   )
@@ -939,7 +950,6 @@ table4_c <- modelsummary::modelsummary(
     
 table4_c
 
-
 ### save table 4c ---------------------------------------------------------
 table4_c <- modelsummary::modelsummary(
   list(
@@ -954,7 +964,11 @@ table4_c <- modelsummary::modelsummary(
     "Base sample of \n log output per worker" = table4_c_col9
   ), 
   coef_map = table4_b_coef_map,
-  gof_map = c("nobs")
+  gof_map = c("nobs"),
+  output = "huxtable"
   ) %>%
-  huxtable::quick_xlsx(file = "figuretable/AJR_table4_c.xlsx")
+  huxtable::quick_xlsx(
+    file = "figuretable/AJR_table4_c.xlsx",
+    open = FALSE
+    )
 

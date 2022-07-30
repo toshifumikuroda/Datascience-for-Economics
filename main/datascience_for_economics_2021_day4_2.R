@@ -136,5 +136,5 @@ synth_data <- Synth::dataprep(foo = SSDSE_2020B,
                               time.plot = c(2007:2017),
                               time.predictors.prior = c(2007:2016)
 )
-synth_out <- synth(synth_data)
+synth_out <- Synth::synth(synth_data)
 Synth::path.plot(dataprep.res = synth_data, synth.res = synth_out)
