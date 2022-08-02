@@ -445,7 +445,8 @@ modelsummary::modelsummary(
   output = "huxtable"
   ) %>%
   huxtable::quick_xlsx(
-    file = "figuretable/demand_table3.xlsx"
+    file = "figuretable/demand_table3.xlsx",
+    open = FALSE
   )
 
 Table3_edited <- 
