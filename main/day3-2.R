@@ -6,17 +6,24 @@ library(AER)
 data(Fatalities)
 
 ## subset 1982,1988 ------------------------------------------------------
-Fatalities$fatal_rate <- Fatalities$fatal / Fatalities$pop * 10000
-Fatalities1982 <- Fatalities |>
+Fatalities$fatal_rate <- 
+  Fatalities$fatal / Fatalities$pop * 10000
+
+Fatalities1982 <- 
+  Fatalities |>
   dplyr::filter(year == "1982")
-Fatalities1988 <- Fatalities |>
+
+Fatalities1988 <- 
+  Fatalities |>
   dplyr::filter(year == "1988") 
 
 ## クロスセクションols -----------------------------------------------------------
-fatal1982_mod <- lm(fatal_rate ~ beertax, data = Fatalities1982)
+fatal1982_mod <- 
+  lm(fatal_rate ~ beertax, data = Fatalities1982)
 coeftest(fatal1982_mod, vcov. = vcovHC, type = "HC1")
 
-fatal1988_mod <- lm(fatal_rate ~ beertax, data = Fatalities1988)
+fatal1988_mod <- 
+  lm(fatal_rate ~ beertax, data = Fatalities1988)
 coeftest(fatal1988_mod, vcov. = vcovHC, type = "HC1")
 
 ## ビール税と交通事故死の図 ----------------------------------------------
@@ -43,9 +50,15 @@ plot(x = Fatalities1988$beertax,
 abline(fatal1988_mod, lwd = 1.5)
 
 ## 差分ols -----------------------------------------------------------------
-diff_fatal_rate <- Fatalities1988$fatal_rate - Fatalities1982$fatal_rate
-diff_beertax <- Fatalities1988$beertax - Fatalities1982$beertax
-fatal_diff_mod <- lm(diff_fatal_rate ~ diff_beertax)
+diff_fatal_rate <- 
+  Fatalities1988$fatal_rate - Fatalities1982$fatal_rate
+
+diff_beertax <- 
+  Fatalities1988$beertax - Fatalities1982$beertax
+
+fatal_diff_mod <- 
+  lm(diff_fatal_rate ~ diff_beertax)
+
 coeftest(fatal_diff_mod, vcov = vcovHC, type = "HC1")
 
 
@@ -62,31 +75,49 @@ plot(x = diff_beertax,
 abline(fatal_diff_mod, lwd = 1.5)
 
 
-# 教育と賃金 ---------------------------------------------------------## データの読み込み -------------------------------------------------
+# 教育と賃金 ---------------------------------------------------------
+
+## データの読み込みと並び替え -------------------------------------------------
 data("CPSSWEducation")
 
+CPSSWEducation <-
+  CPSSWEducation |>
+  dplyr::arrange(
+    education
+  )
+
 ## 教育年数と所得の関係をプロット ---------------------------------------
-labor_model <- lm(earnings ~ education, data = CPSSWEducation)
+labor_model <- 
+  lm(earnings ~ education, data = CPSSWEducation)
+
 plot(CPSSWEducation$education, CPSSWEducation$earnings,  ylim = c(0, 150))
+
 abline(labor_model, col = "steelblue", lwd = 2)
+
 summary(labor_model)
 
 
 ## 箱ひげ図の追加 ----------------------------------------------------------------- 
-boxplot(formula = earnings ~ education, 
-        at = c(intersect(
-          CPSSWEducation$education,
-          CPSSWEducation$education)
-        ),
-        add = TRUE, 
-        border = "black", 
-        data = CPSSWEducation)
+boxplot(
+  formula = earnings ~ education, 
+  at = c(intersect(
+    CPSSWEducation$education,
+    CPSSWEducation$education)
+  ),
+  add = TRUE, 
+  border = "black", 
+  data = CPSSWEducation
+)
 
 ## 不均一分散に頑健な標準誤差 ------------------------------------------------------------
 coeftest(labor_model)
+
 vcov_HC0 <- vcovHC(labor_model, type = "HC0")
+
 coeftest(labor_model, vcov. = vcov_HC0)
+
 vcov_HC1 <- vcovHC(labor_model, type = "HC1")
+
 coeftest(labor_model, vcov. = vcov_HC1) 
 
 
@@ -116,7 +147,15 @@ fatalities_mod_hac2 <- estimatr::lm_robust(fatal_rate ~ beertax + state + year +
 
 modelsummary::modelsummary(
   title = "ビール税と死亡率",
-  list(fatalities_mod, fatalities_mod_i, fatalities_mod_it, fatalities_mod_hc, fatalities_mod_hac, fatalities_mod_hc2, fatalities_mod_hac2),
+  list(
+    fatalities_mod, 
+    fatalities_mod_i, 
+    fatalities_mod_it, 
+    fatalities_mod_hc, 
+    fatalities_mod_hac, 
+    fatalities_mod_hc2, 
+    fatalities_mod_hac2
+    ),
   gof_map = c("nobs", "r.squared"),
   statistic = "std.error"
 )
@@ -127,9 +166,18 @@ year_control <- c("Year controls", "No", "No", "Yes", "Yes", "Yes", "Yes", "Yes"
 se_table <- c("Robust Standard Error", "No", "No", "NO", "HC", "Cluster", "HC", "Cluster")
 table_rows <- data.frame(rbind(state_control, year_control, se_table))
 attr(table_rows, 'position') <- c(15,16,17)
+
 modelsummary::modelsummary(
   title = "ビール税と死亡率",
-  list(fatalities_mod, fatalities_mod_i, fatalities_mod_it, fatalities_mod_hc, fatalities_mod_hac, fatalities_mod_hc2, fatalities_mod_hac2),
+  list(
+    fatalities_mod, 
+    fatalities_mod_i, 
+    fatalities_mod_it, 
+    fatalities_mod_hc, 
+    fatalities_mod_hac, 
+    fatalities_mod_hc2, 
+    fatalities_mod_hac2
+  ),
   gof_map = c("nobs", "r.squared"),
   statistic = "std.error",
   coef_omit = "state*|year*",
