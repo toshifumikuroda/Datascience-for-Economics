@@ -49,7 +49,8 @@ table1_1 <-
 table1_1
 
 ### STATAと同じクラスター誤差に頑健な標準誤差 -----------------------
-table1_1 <-  realdata |>
+table1_1 <-
+  realdata |>
   tidyr::drop_na(lm, lp) |>
   estimatr::lm_robust(formula = model_col1, clusters = code, se_type = "stata")
 
@@ -68,9 +69,11 @@ model_col2 <- paste("ls", xvars_col2, sep = " ~ ")
 model_col2 <- as.formula(model_col2)
 
 ### 推定 ------------------------------------------------------------------
-table1_2 <- realdata |>
+table1_2 <-
+  realdata |>
   tidyr::drop_na(lm, lp) |>
   estimatr::lm_robust(formula = model_col2, clusters = code , se_type = "stata")
+
 table1_2
 
 
@@ -84,9 +87,11 @@ model_col3 <- paste("ls", xvars_col3, sep = " ~ ")
 model_col3 <- as.formula(model_col3)
 
 ### 推定 ------------------------------------------------------------------
-table1_3 <- realdata |>
+table1_3 <-
+  realdata |>
   tidyr::drop_na(lm, lp) |>
   estimatr::lm_robust(formula = model_col3, clusters = code , se_type = "stata")
+
 table1_3
 
 ## 4列目からの変数群の定義 ------------------------------------------------------------
@@ -103,9 +108,11 @@ model_col4 <- paste("ls", xvars_col4, sep = " ~ ")
 model_col4 <- as.formula(model_col4)
 
 ### 推定 ------------------------------------------------------------------
-table1_4 <- realdata |>
+table1_4 <- 
+  realdata |>
   tidyr::drop_na(lm, lp) |>
   estimatr::lm_robust(formula = model_col3, clusters = code , se_type = "stata")
+
 table1_4
 
 ## 6列目 ------------------------------------------------------------------
@@ -117,9 +124,12 @@ model_col6 <- paste("roce", xvars_col6, sep = " ~ ")
 model_col6 <- as.formula(model_col6)
 
 ### 推定 ------------------------------------------------------------------
-table1_6 <- realdata |> 
+table1_6 <- 
+  realdata |> 
   tidyr::drop_na(lm, lp) |> 
   estimatr::lm_robust(formula = model_col6, clusters = code, se_type = "stata") 
+
+table1_6
 
 ## 7列目 ------------------------------------------------------------------
 ### 右辺変数の指定 -------------------------------------------------------
@@ -130,9 +140,12 @@ model_col7 <- paste("lq", xvars_col7, sep = " ~ ")
 model_col7 <- as.formula(model_col7)
 
 ### 推定 ------------------------------------------------------------------
-table1_7 <- realdata |> 
+table1_7 <-
+  realdata |> 
   tidyr::drop_na(lm, lp) |> 
   estimatr::lm_robust(formula = model_col7, clusters = code, se_type = "stata") 
+
+table1_7
 
 ## 8列目 ------------------------------------------------------------------
 ### 右辺変数の指定 -------------------------------------------------------
@@ -143,17 +156,19 @@ model_col9 <- paste("dsales", xvars_col9, sep = " ~ ")
 model_col9 <- as.formula(model_col9)
 
 ### 推定 ------------------------------------------------------------------
-table1_9 <- realdata |> 
+table1_9 <-
+  realdata |> 
   tidyr::drop_na(lm, lp) |> 
   estimatr::lm_robust(formula = model_col9, clusters = code, se_type = "stata") 
 
+table1_9
 
 # 表1の纏め -------------------------------------------------------------------
 
 ### 変数名の定義 ---------------------------------------------------------------
 
 table1_coef_map <- c(
-"zmanagement" = "Management z-score",
+  "zmanagement" = "Management z-score",
   "le" = "Ln(Labor)",             
   "lp" = "Ln(Capital)", 
   "lm" = "Ln(Materials)"
@@ -174,8 +189,14 @@ attr(table1_rows, 'position') <- c(1,2,3,12,13,14)
 ### 表の作成 --------------------------------------------------------------------
 table1 <- 
   modelsummary::modelsummary(
-    list("(1)"=table1_1, "(2)"=table1_2, "(3)"=table1_3, "(4)"=table1_4, 
-         "(6)"=table1_6, "(7)"=table1_7, "(9)"=table1_9
+    list(
+      "(1)"=table1_1, 
+      "(2)"=table1_2, 
+      "(3)"=table1_3,
+      "(4)"=table1_4, 
+      "(6)"=table1_6,
+      "(7)"=table1_7,
+      "(9)"=table1_9
     ),
     coef_map = table1_coef_map,
     statistics = c('# observations' = 'nobs'),
@@ -188,7 +209,15 @@ table1
 ### 表1のpngファイルを出力 -----------------------------------------------------------
 
 modelsummary::modelsummary(
-  list("(1)"=table1_1, "(2)"=table1_2, "(3)"=table1_3, "(4)"=table1_4, "(6)"=table1_6, "(7)"=table1_7, "(9)"=table1_9),
+  list(
+    "(1)"=table1_1, 
+    "(2)"=table1_2, 
+    "(3)"=table1_3,
+    "(4)"=table1_4, 
+    "(6)"=table1_6,
+    "(7)"=table1_7,
+    "(9)"=table1_9
+  ),
   coef_map = table1_coef_map,
   statistics = c('# observations' = 'nobs'),
   add_rows = table1_rows,
@@ -201,13 +230,38 @@ modelsummary::modelsummary(
   )
 
 
+### 表1のhtmlファイルを出力 -----------------------------------------------------------
+
+modelsummary::modelsummary(
+  list(
+    "(1)"=table1_1, 
+    "(2)"=table1_2, 
+    "(3)"=table1_3,
+    "(4)"=table1_4, 
+    "(6)"=table1_6,
+    "(7)"=table1_7,
+    "(9)"=table1_9
+  ),
+  coef_map = table1_coef_map,
+  statistics = c('# observations' = 'nobs'),
+  add_rows = table1_rows,
+  gof_map = c("nobs", "r.squared"),
+  output = "kableExtra"
+) |> 
+  kableExtra::kable_classic() |>
+  kableExtra::save_kable(
+    "figuretable/firm_table1.html"
+  )
+
+
 # 表2 ----------------------------------------------------------------------
 
 
 ## クロスセクションデータの作成 ----------------------------------------------------------
 
 
-table2_data <- realdata |> 
+table2_data <- 
+  realdata |> 
   dplyr::rowwise() |>
   dplyr::mutate(zcapital = mean(c(zlean1, zlean2, zperf2), na.rm = TRUE)) |>
   dplyr::mutate(zhuman = mean(c(ztalent1, ztalent6, ztalent7), na.rm = TRUE)) |>
@@ -218,23 +272,32 @@ table2_data <- realdata |>
 
 
 ## モデルの回帰 ------------------------------------------------------------------
-table2_1 <- table2_data |>
+table2_1 <-
+  table2_data |>
   estimatr::lm_robust(
     formula = zhuman ~ ldegree + ldegreemiss + cceurope + ccgermany + ccus,
     se_type = "stata")
-table2_2 <- table2_data |>
+
+table2_2 <-
+  table2_data |>
   estimatr::lm_robust(
     formula = zcapital ~ ldegree + ldegreemiss + cceurope + ccgermany + ccus, 
     se_type = "stata")
-table2_3 <- table2_data |>
+
+table2_3 <-
+  table2_data |>
   estimatr::lm_robust(
     formula = zhuman_zcapital ~ ldegree + ldegreemiss + cceurope + ccgermany + ccus, 
     se_type = "stata")
-table2_4 <- table2_data |>
+
+table2_4 <-
+  table2_data |>
   estimatr::lm_robust(
     formula = zhuman_zcapital ~ ldegree + ldegreemiss + lempm + lfirmage + public + cceurope + ccgermany + ccus + factor(sic3),
     se_type = "stata")
-table2_5 <- table2_data |>
+
+table2_5 <-
+  table2_data |>
   estimatr::lm_robust(
     formula = zhuman_zcapital ~ law + lempm + public + cceurope + ccgermany + ccus + factor(sic3), se_type = "stata")
 
@@ -263,12 +326,19 @@ table2_coef_map <- c(
 ### 表の作成 --------------------------------------------------------------------
 table2 <- 
   modelsummary::modelsummary(
-    list("(1)"=table2_1, "(2)"=table2_2, "(3)"=table2_3, "(4)"=table2_4, "(5)"=table2_5),
+    list(
+      "(1)"=table2_1, 
+      "(2)"=table2_2, 
+      "(3)"=table2_3, 
+      "(4)"=table2_4, 
+      "(5)"=table2_5
+    ),
     coef_map = table2_coef_map,
     statistics = "std.error",
     add_rows = table2_rows,
     gof_map = c("nobs", "r.squared")
   )
+
 table2
 
 
@@ -276,7 +346,21 @@ table2
 
 ## コントロール変数の定義 ------------------------------------------
 
-table3_control <- c("lempm", "lfirmage", "public", "ldegree", "ldegreemiss", "mba", "mbamiss", "uncons", "ccfrance", "ccgermany", "ccuk", noise) 
+table3_control <- 
+  c(
+    "lempm", 
+    "lfirmage",
+    "public",
+    "ldegree",
+    "ldegreemiss",
+    "mba",
+    "mbamiss",
+    "uncons",
+    "ccfrance",
+    "ccgermany",
+    "ccuk",
+    noise
+  ) 
 
 
 
@@ -299,9 +383,15 @@ model_table3_col1 <- as.formula(model_table3_col1)
 ### 回帰 ----------------------------------------------------------------------
 
 
-table3_1 <- realdata |>  dplyr::group_by(code) |>
+table3_1 <- 
+  realdata |>  
+  dplyr::group_by(code) |>
   dplyr::filter(year == max(year)) |>
-  estimatr::lm_robust(formula = model_table3_col1, clusters = oecdind_cty, se_type = "stata")
+  estimatr::lm_robust(
+    formula = model_table3_col1, 
+    clusters = oecdind_cty, 
+    se_type = "stata"
+  )
 
 
 ## 二列目 ---------------------------------------------------------------------
@@ -310,21 +400,35 @@ table3_1 <- realdata |>  dplyr::group_by(code) |>
 ### 右辺変数の定義 -----------------------------------------------------------------
 
 
-xvars_table3_col2 <- paste(c("lindiopen9599", "factor(sic3)", table3_control), collapse = " + ")
+xvars_table3_col2 <- 
+  paste(
+    c(
+      "lindiopen9599", 
+      "factor(sic3)", 
+      table3_control), 
+    collapse = " + "
+  )
 
 
 ### formulaの作成 --------------------------------------------------------------
 
 
-model_table3_col2 <- paste("zmanagement", xvars_table3_col2, sep = " ~ ")
+model_table3_col2 <- 
+  paste("zmanagement", xvars_table3_col2, sep = " ~ ")
 model_table3_col2 <- as.formula(model_table3_col2)
 
 
 ### 回帰 ----------------------------------------------------------------------
 
-table3_2 <- realdata |>  dplyr::group_by(code) |>
+table3_2 <-
+  realdata |>
+  dplyr::group_by(code) |>
   dplyr::filter(year == max(year)) |>
-  estimatr::lm_robust(formula = model_table3_col2, clusters = oecdind_cty, se_type = "stata")
+  estimatr::lm_robust(
+    formula = model_table3_col2, 
+    clusters = oecdind_cty, 
+    se_type = "stata"
+  )
 
 
 ## 3列目 ---------------------------------------------------------------------
@@ -346,9 +450,15 @@ model_table3_col3 <- as.formula(model_table3_col3)
 ### 回帰 ----------------------------------------------------------------------
 
 
-table3_3 <- realdata |>   dplyr::group_by(code) |>
+table3_3 <- 
+  realdata |>
+  dplyr::group_by(code) |>
   dplyr::filter(year == max(year)) |>
-  estimatr::lm_robust(formula = model_table3_col3, clusters = csic3, se_type = "stata")
+  estimatr::lm_robust(
+    formula = model_table3_col3, 
+    clusters = csic3, 
+    se_type = "stata"
+  )
 
 
 
@@ -361,9 +471,15 @@ model_table3_col4 <- as.formula(model_table3_col4)
 
 ### 回帰 ----------------------------------------------------------------------
 
-table3_4 <- realdata |>   dplyr::group_by(code) |>
+table3_4 <- 
+  realdata |> 
+  dplyr::group_by(code) |>
   dplyr::filter(year == max(year)) |>
-  estimatr::lm_robust(formula = model_table3_col4, clusters = csic3, se_type = "stata")
+  estimatr::lm_robust(
+    formula = model_table3_col4, 
+    clusters = csic3, 
+    se_type = "stata"
+  )
 
 ## 5列目 ---------------------------------------------------------------------
 
@@ -384,9 +500,15 @@ model_table3_col5 <- as.formula(model_table3_col5)
 ### 回帰 ----------------------------------------------------------------------
 
 
-table3_5 <- realdata |>   dplyr::group_by(code) |>
+table3_5 <-
+  realdata |> 
+  dplyr::group_by(code) |>
   dplyr::filter(year == max(year)) |>
-  estimatr::lm_robust(formula = model_table3_col5, clusters = csic3, se_type = "stata")
+  estimatr::lm_robust(
+    formula = model_table3_col5, 
+    clusters = csic3, 
+    se_type = "stata"
+  )
 
 
 
@@ -399,9 +521,15 @@ model_table3_col6 <- as.formula(model_table3_col6)
 
 ### 回帰 ----------------------------------------------------------------------
 
-table3_6 <- realdata |>   dplyr::group_by(code) |>
+table3_6 <-
+  realdata |> 
+  dplyr::group_by(code) |>
   dplyr::filter(year == max(year)) |>
-  estimatr::lm_robust(formula = model_table3_col6, clusters = csic3, se_type = "stata")
+  estimatr::lm_robust(
+    formula = model_table3_col6,
+    clusters = csic3,
+    se_type = "stata"
+  )
 
 
 ## 7列目 ---------------------------------------------------------------------
@@ -427,31 +555,45 @@ model_table3_col7 <- as.formula(model_table3_col7)
 ### 回帰 ----------------------------------------------------------------------
 
 
-table3_7 <- realdata |>   dplyr::group_by(code) |>
+table3_7 <-
+  realdata |>
+  dplyr::group_by(code) |>
   dplyr::filter(year == max(year)) |>
-  estimatr::lm_robust(formula = model_table3_col7, clusters = csic3, se_type = "stata")
+  estimatr::lm_robust(
+    formula = model_table3_col7,
+    clusters = csic3, 
+    se_type = "stata"
+  )
 
 
 
 ## 8列目 ---------------------------------------------------------------------
 
-xvars_table3_col8 <- paste(
- c(
-   c("competition", "competitionmiss",
-      "lindiopen9599", "factor(sic3)",
-      "lerner", "factor(sic3)"),
-    table3_control
+xvars_table3_col8 <- 
+  paste(
+    c(
+      c("competition", "competitionmiss",
+        "lindiopen9599", "factor(sic3)",
+        "lerner", "factor(sic3)"),
+      table3_control
     ),
-  collapse = " + ")
+    collapse = " + "
+  )
 model_table3_col8 <- paste("zmanagement", xvars_table3_col6, sep = " ~ ")
 model_table3_col8 <- as.formula(model_table3_col8)
 
 
 ### 回帰 ----------------------------------------------------------------------
 
-table3_8 <- realdata |>   dplyr::group_by(code) |>
+table3_8 <- 
+  realdata |>
+  dplyr::group_by(code) |>
   dplyr::filter(year == max(year)) |>
-  estimatr::lm_robust(formula = model_table3_col8, clusters = csic3, se_type = "stata")
+  estimatr::lm_robust(
+    formula = model_table3_col8, 
+    clusters = csic3,
+    se_type = "stata"
+  )
 
 
 ## 表3のまとめ ------------------------------------------------------------------
@@ -484,8 +626,16 @@ attr(table3_rows, 'position') <- c(1,2,10)
 
 table3 <- 
   modelsummary::modelsummary(
-    list("(1)"=table3_1, "(2)"=table3_2, "(3)"=table3_3, "(4)"=table3_4, 
-         "(5)"=table3_5, "(6)"=table3_6, "(7)"=table3_7, "(8)"=table3_8),
+    list(
+      "(1)"=table3_1,
+      "(2)"=table3_2,
+      "(3)"=table3_3, 
+      "(4)"=table3_4, 
+      "(5)"=table3_5,
+      "(6)"=table3_6,
+      "(7)"=table3_7,
+      "(8)"=table3_8
+    ),
     coef_map = table3_coef_map,
     statistics = "std.error",
     add_rows = table3_rows,
@@ -493,21 +643,4 @@ table3 <-
   )
 
 table3
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
